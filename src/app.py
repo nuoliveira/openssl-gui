@@ -234,9 +234,11 @@ class ViewCertificateFrame(ttk.Frame):
         self.certificate_file_input.insert(0, certificate_file.name)
         self.certificate_file_input.config(state="readonly")
 
-        certificate = crypto.load_certificate(crypto.FILETYPE_PEM, certificate_file.read())
+        certificate_data = certificate_file.read()
+        certificate = crypto.load_certificate(crypto.FILETYPE_PEM, certificate_data)
         self._update_certificate_info(certificate)
-        certificate_file.close()
+
+        certificate_file.close()  # Ensure to close the file after reading
 
     def _update_certificate_info(self, certificate) -> None:
         subject = certificate.get_subject()
@@ -265,13 +267,97 @@ class ViewCertificateFrame(ttk.Frame):
         self.public_key_values["Key Size"].config(text=public_key.bits())
 
 
+
 class CreateCertificateFrame(ttk.Frame):
     def __init__(self, master: tk.Misc) -> None:
         super().__init__(master)
         self.create_widgets()
 
     def create_widgets(self) -> None:
-        pass  # Add widgets for creating certificates
+        self.cert_frame = ttk.Labelframe(self, text="Create Certificate")
+
+        self.csr_label = ttk.Label(self.cert_frame, text="CSR File")
+        self.csr_label.grid(row=0, column=0, padx=5, pady=5, sticky="e")
+        self.csr_entry = ttk.Entry(self.cert_frame, state="readonly", width=50)
+        self.csr_entry.grid(row=0, column=1, padx=5, pady=5)
+        self.csr_browse_button = ttk.Button(self.cert_frame, text="Browse", command=self._browse_csr)
+        self.csr_browse_button.grid(row=0, column=2, padx=5, pady=5)
+
+        self.key_label = ttk.Label(self.cert_frame, text="Private Key File")
+        self.key_label.grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        self.key_entry = ttk.Entry(self.cert_frame, state="readonly", width=50)
+        self.key_entry.grid(row=1, column=1, padx=5, pady=5)
+        self.key_browse_button = ttk.Button(self.cert_frame, text="Browse", command=self._browse_key)
+        self.key_browse_button.grid(row=1, column=2, padx=5, pady=5)
+
+        self.validity_label = ttk.Label(self.cert_frame, text="Validity (Days)")
+        self.validity_label.grid(row=2, column=0, padx=5, pady=5, sticky="e")
+        self.validity_entry = ttk.Entry(self.cert_frame, width=10)
+        self.validity_entry.grid(row=2, column=1, padx=5, pady=5)
+
+        self.create_cert_button = ttk.Button(self.cert_frame, text="Create Certificate", command=self._create_certificate)
+        self.create_cert_button.grid(row=3, columnspan=3, padx=5, pady=10)
+
+        self.cert_frame.pack(padx=20, pady=20, fill="both", expand=True)
+
+    def _browse_csr(self) -> None:
+        filename = filedialog.askopenfilename(filetypes=[("CSR files", "*.csr"), ("All Files", "*.*")])
+        if filename:
+            self.csr_entry.config(state="normal")
+            self.csr_entry.delete(0, "end")
+            self.csr_entry.insert(0, filename)
+            self.csr_entry.config(state="readonly")
+
+    def _browse_key(self) -> None:
+        filename = filedialog.askopenfilename(filetypes=[("Key files", "*.key"), ("All Files", "*.*")])
+        if filename:
+            self.key_entry.config(state="normal")
+            self.key_entry.delete(0, "end")
+            self.key_entry.insert(0, filename)
+            self.key_entry.config(state="readonly")
+
+    def _create_certificate(self) -> None:
+        csr_filename = self.csr_entry.get().strip()
+        key_filename = self.key_entry.get().strip()
+        validity_days = self.validity_entry.get().strip()
+
+        if not (csr_filename and key_filename and validity_days.isdigit()):
+            messagebox.showerror("Error", "Please fill in all fields correctly.")
+            return
+
+        validity_days = int(validity_days)
+
+        # Load CSR
+        with open(csr_filename, "rb") as f:
+            csr = crypto.load_certificate_request(crypto.FILETYPE_PEM, f.read())
+
+        # Load Private Key
+        with open(key_filename, "rb") as f:
+            key = crypto.load_privatekey(crypto.FILETYPE_PEM, f.read())
+
+        # Create Certificate
+        cert = crypto.X509()
+        cert.set_subject(csr.get_subject())
+        cert.set_pubkey(csr.get_pubkey())
+        cert.gmtime_adj_notBefore(0)
+        cert.gmtime_adj_notAfter(validity_days * 24 * 60 * 60)  # Validity in seconds
+
+        # Add extensions if needed (example with basicConstraints and subjectKeyIdentifier)
+        cert.add_extensions([
+            crypto.X509Extension(b"basicConstraints", True, b"CA:TRUE, pathlen:0"),
+            crypto.X509Extension(b"subjectKeyIdentifier", False, b"hash", subject=cert),
+        ])
+
+        cert.set_issuer(cert.get_subject())  # Self-signed certificate
+        cert.sign(key, "sha256")
+
+        # Save Certificate to a file
+        filename = filedialog.asksaveasfilename(defaultextension=".crt", filetypes=[("Certificate files", "*.crt"), ("All Files", "*.*")])
+        if filename:
+            with open(filename, "wb") as f:
+                f.write(crypto.dump_certificate(crypto.FILETYPE_PEM, cert))
+            messagebox.showinfo("Success", f"Certificate created successfully and saved to {filename}")
+
 
 
 class CreateCertificateSigningRequestFrame(ttk.Frame):
@@ -280,7 +366,100 @@ class CreateCertificateSigningRequestFrame(ttk.Frame):
         self.create_widgets()
 
     def create_widgets(self) -> None:
-        pass  # Add widgets for creating certificate signing requests
+        self.csr_frame = ttk.Labelframe(self, text="Create CSR")
+
+        self.common_name_label = ttk.Label(self.csr_frame, text="Common Name")
+        self.common_name_label.grid(row=0, column=0, padx=5, pady=5, sticky="e")
+        self.common_name_entry = ttk.Entry(self.csr_frame)
+        self.common_name_entry.grid(row=0, column=1, padx=5, pady=5)
+
+        self.email_label = ttk.Label(self.csr_frame, text="Email Address")
+        self.email_label.grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        self.email_entry = ttk.Entry(self.csr_frame)
+        self.email_entry.grid(row=1, column=1, padx=5, pady=5)
+
+        self.country_label = ttk.Label(self.csr_frame, text="Country")
+        self.country_label.grid(row=2, column=0, padx=5, pady=5, sticky="e")
+        self.country_entry = ttk.Entry(self.csr_frame)
+        self.country_entry.grid(row=2, column=1, padx=5, pady=5)
+
+        self.state_label = ttk.Label(self.csr_frame, text="State or Province")
+        self.state_label.grid(row=3, column=0, padx=5, pady=5, sticky="e")
+        self.state_entry = ttk.Entry(self.csr_frame)
+        self.state_entry.grid(row=3, column=1, padx=5, pady=5)
+
+        self.locality_label = ttk.Label(self.csr_frame, text="Locality")
+        self.locality_label.grid(row=4, column=0, padx=5, pady=5, sticky="e")
+        self.locality_entry = ttk.Entry(self.csr_frame)
+        self.locality_entry.grid(row=4, column=1, padx=5, pady=5)
+
+        self.organization_label = ttk.Label(self.csr_frame, text="Organization")
+        self.organization_label.grid(row=5, column=0, padx=5, pady=5, sticky="e")
+        self.organization_entry = ttk.Entry(self.csr_frame)
+        self.organization_entry.grid(row=5, column=1, padx=5, pady=5)
+
+        self.organizational_unit_label = ttk.Label(self.csr_frame, text="Organizational Unit")
+        self.organizational_unit_label.grid(row=6, column=0, padx=5, pady=5, sticky="e")
+        self.organizational_unit_entry = ttk.Entry(self.csr_frame)
+        self.organizational_unit_entry.grid(row=6, column=1, padx=5, pady=5)
+
+        self.create_csr_button = ttk.Button(self.csr_frame, text="Create CSR", command=self._create_csr)
+        self.create_csr_button.grid(row=7, columnspan=2, padx=5, pady=10)
+
+        self.csr_frame.pack(padx=20, pady=20, fill="both", expand=True)
+
+    def _create_csr(self) -> None:
+        common_name = self.common_name_entry.get().strip()
+        email_address = self.email_entry.get().strip()
+        country = self.country_entry.get().strip()
+        state = self.state_entry.get().strip()
+        locality = self.locality_entry.get().strip()
+        organization = self.organization_entry.get().strip()
+        organizational_unit = self.organizational_unit_entry.get().strip()
+
+        if not common_name:
+            messagebox.showerror("Error", "Common Name is required.")
+            return
+
+        try:
+            # Create a key pair
+            key = crypto.PKey()
+            key.generate_key(crypto.TYPE_RSA, 2048)
+
+            # Create a CSR
+            req = crypto.X509Req()
+            subj = req.get_subject()
+            subj.commonName = common_name
+            
+            # Check if email_address is not empty
+            if email_address:
+                subj.emailAddress = email_address
+
+            # Check if country is not empty
+            if country:
+                subj.countryName = country
+
+            # Set other fields similarly
+            subj.stateOrProvinceName = state
+            subj.localityName = locality
+            subj.organizationName = organization
+            subj.organizationalUnitName = organizational_unit
+
+            req.set_pubkey(key)
+            req.sign(key, "sha256")
+
+            # Save the CSR to a file
+            filename = filedialog.asksaveasfilename(defaultextension=".csr", filetypes=[("CSR files", "*.csr"), ("All Files", "*.*")])
+            if filename:
+                with open(filename, "wb") as f:
+                    f.write(crypto.dump_certificate_request(crypto.FILETYPE_PEM, req))
+                messagebox.showinfo("Success", f"CSR created successfully and saved to {filename}")
+
+        except OpenSSL.crypto.Error as e:
+            messagebox.showerror("OpenSSL Error", f"Error creating CSR: {e}")
+        except Exception as e:
+            messagebox.showerror("Error", f"Unexpected error: {e}")
+
 
 
 if __name__ == "__main__":

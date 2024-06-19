@@ -50,11 +50,6 @@ def decrypt_file_example() -> None:
     with open(output_file_path) as output_file:
         output_file.write(decryption_key.decrypt(input_file_contents, ...))
 
-def create_certificate_signing_request_example() -> None:
-    pass
-
-def create_certificate_example() -> None:
-    pass
 
 def view_certificate_from_file_example() -> None:
     certificate_file_path = "assets/ipvc.crt"
