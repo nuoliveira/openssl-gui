@@ -19,8 +19,8 @@ def verify_file_integrity_example() -> None:
     print(file_hash.hexdigest())
 
 def create_keypair_example() -> None:
-    public_key_file_path = "assets/public.pub"
-    private_key_file_path = "assets/private.key"
+    public_key_file_path = "assets/example.pub"
+    private_key_file_path = "assets/example.key"
     key_pair_type = crypto.TYPE_RSA
     key_pair_size = 512
     key_pair = crypto.PKey()
@@ -55,10 +55,16 @@ def decrypt_file_example() -> None:
         output_file.write(decryption_key.decrypt(input_file_contents, ...))
 
 def create_certificate_signing_request_example() -> None:
-    pass
+    certificate_signing_request_file_path = "assets/example.csr"
+    certificate_signing_request = crypto.X509()
+    with open(certificate_signing_request_file_path, "wb") as certificate_signing_requestfile:
+        certificate_signing_requestfile.write(crypto.dump_certificate(crypto.FILETYPE_PEM, certificate_signing_request))
 
 def create_certificate_example() -> None:
-    pass
+    certificate_file_path = "assets/example.crt"
+    certificate = crypto.X509()
+    with open(certificate_file_path, "wb") as certificate_file:
+        certificate_file.write(crypto.dump_certificate(crypto.FILETYPE_PEM, certificate))
 
 def view_certificate_from_file_example() -> None:
     certificate_file_path = "assets/ipvc.crt"
@@ -82,9 +88,6 @@ def print_certificate(certificate: crypto.X509) -> None:
     print("- Locality:", subject.localityName)
     print("- Organization:", subject.organizationName)
     print("- Organizational Unit:", subject.organizationalUnitName)
-
-    print()
-
     issuer = certificate.get_issuer()
     print("Issuer:")
     print("- Common Name:", issuer.commonName)
@@ -94,16 +97,10 @@ def print_certificate(certificate: crypto.X509) -> None:
     print("- Locality:", issuer.localityName)
     print("- Organization:", issuer.organizationName)
     print("- Organizational Unit:", issuer.organizationalUnitName)
-
-    print()
-
     public_key = certificate.get_pubkey()
     print("Public Key:")
     print("- Key Type", public_key.type())
     print("- Key Size", public_key.bits())
-
-    print()
-
     print("Validity:")
     print("- Not Before:", certificate.get_notBefore())
     print("- Not After:", certificate.get_notAfter())

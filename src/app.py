@@ -41,11 +41,11 @@ class VerifyFileIntegrityFrame(ttk.Frame):
         self.verify_file_button = ttk.Button(self, text="Verify", command=self.verify_file_integrity)
 
         self.file_label.grid(row=0, column=0, pady=(0, 4), padx=(0, 2), sticky="e")
-        self.file_input.grid(row=0, column=1, pady=(0, 4), padx=(2, 2), sticky="ew")
-        self.file_browse_button.grid(row=0, column=2, pady=(0, 4), padx=(2, 0))
-        self.hash_algorithm_label.grid(row=1, column=0, pady=(4, 4), padx=(0, 2), sticky="ew")
-        self.hash_algorithm_input.grid(row=1, column=1, pady=(4, 4), padx=(2, 0), sticky="ew")
-        self.verify_file_button.grid(row=2, column=0, columnspan=2, pady=(4, 0), padx=(0, 0), sticky="ew")
+        self.file_input.grid(row=0, column=1, pady=(0, 4), padx=(2, 2), sticky="we")
+        self.file_browse_button.grid(row=0, column=2, pady=(0, 4), padx=(2, 0), sticky="w")
+        self.hash_algorithm_label.grid(row=1, column=0, pady=(4, 4), padx=(0, 2), sticky="e")
+        self.hash_algorithm_input.grid(row=1, column=1, pady=(4, 4), padx=(2, 0), sticky="we")
+        self.verify_file_button.grid(row=2, column=0, columnspan=2, pady=(4, 0), padx=(0, 0), sticky="we")
 
     def browse_input_file(self) -> None:
         filename = filedialog.askopenfilename(filetypes=[("All Files", "*.*")])
@@ -75,11 +75,11 @@ class CreateKeyPairFrame(ttk.Frame):
         self.key_pair_size_input = ttk.Combobox(self, values=("512", "1024", "2048", "3072", "4096", "5120", "6144", "7168", "8192"), state="readonly")
         self.key_pair_create_button = ttk.Button(self, text="Create Key Pair", command=self.create_keypair)
 
-        self.key_pair_type_label.grid(row=0, column=0, pady=(0, 4), padx=(0, 2), sticky="nse")
-        self.key_pair_type_input.grid(row=0, column=1, pady=(0, 4), padx=(2, 0), sticky="nsw")
-        self.key_pair_size_label.grid(row=1, column=0, pady=(4, 4), padx=(0, 2), sticky="nse")
-        self.key_pair_size_input.grid(row=1, column=1, pady=(4, 4), padx=(2, 0), sticky="nsw")
-        self.key_pair_create_button.grid(row=2, column=0, columnspan=2, pady=(4, 0), padx=(0, 0), sticky="nsew")
+        self.key_pair_type_label.grid(row=0, column=0, pady=(0, 4), padx=(0, 2), sticky="e")
+        self.key_pair_type_input.grid(row=0, column=1, pady=(0, 4), padx=(2, 0), sticky="we")
+        self.key_pair_size_label.grid(row=1, column=0, pady=(4, 4), padx=(0, 2), sticky="e")
+        self.key_pair_size_input.grid(row=1, column=1, pady=(4, 4), padx=(2, 0), sticky="we")
+        self.key_pair_create_button.grid(row=2, column=0, columnspan=2, pady=(4, 0), padx=(0, 0), sticky="we")
 
     def create_keypair(self) -> None:
         try:
@@ -132,25 +132,25 @@ class CreateCertificateSigningRequestFrame(ttk.Frame):
         self.create_certificate_signing_request_button = ttk.Button(self, text="Create Signing Request", command=self.create_certificate_signing_request)
 
         self.private_key_label.grid(row=0, column=0, pady=(0, 4), padx=(0, 2), sticky="e")
-        self.private_key_input.grid(row=0, column=1, pady=(0, 4), padx=(2, 2), sticky="w")
-        self.private_key_browse_button.grid(row=0, column=2, pady=(0, 4), padx=(2, 0))
+        self.private_key_input.grid(row=0, column=1, pady=(0, 4), padx=(2, 2), sticky="we")
+        self.private_key_browse_button.grid(row=0, column=2, pady=(0, 4), padx=(2, 0), sticky="w")
         self.public_key_label.grid(row=1, column=0, pady=(4, 4), padx=(0, 2), sticky="e")
-        self.public_key_input.grid(row=1, column=1, pady=(4, 4), padx=(2, 2), sticky="w")
-        self.public_key_browse_button.grid(row=1, column=2, pady=(4, 4), padx=(2, 0))
+        self.public_key_input.grid(row=1, column=1, pady=(4, 4), padx=(2, 2), sticky="we")
+        self.public_key_browse_button.grid(row=1, column=2, pady=(4, 4), padx=(2, 0), sticky="w")
         self.common_name_label.grid(row=2, column=0, pady=(4, 4), padx=(0, 2), sticky="e")
-        self.common_name_input.grid(row=2, column=1, pady=(4, 4), padx=(2, 0), sticky="w")
+        self.common_name_input.grid(row=2, column=1, pady=(4, 4), padx=(2, 0), sticky="we")
         self.email_address_label.grid(row=3, column=0, pady=(4, 4), padx=(0, 2), sticky="e")
-        self.email_address_input.grid(row=3, column=1, pady=(4, 4), padx=(2, 0), sticky="w")
+        self.email_address_input.grid(row=3, column=1, pady=(4, 4), padx=(2, 0), sticky="we")
         self.country_label.grid(row=4, column=0, pady=(4, 4), padx=(0, 2), sticky="e")
-        self.country_input.grid(row=4, column=1, pady=(4, 4), padx=(2, 0), sticky="w")
+        self.country_input.grid(row=4, column=1, pady=(4, 4), padx=(2, 0), sticky="we")
         self.state_or_province_label.grid(row=5, column=0, pady=(4, 4), padx=(0, 2), sticky="e")
-        self.state_or_province_input.grid(row=5, column=1, pady=(4, 4), padx=(2, 0), sticky="w")
+        self.state_or_province_input.grid(row=5, column=1, pady=(4, 4), padx=(2, 0), sticky="we")
         self.locality_label.grid(row=6, column=0, pady=(4, 4), padx=(0, 2), sticky="e")
-        self.locality_input.grid(row=6, column=1, pady=(4, 4), padx=(2, 0), sticky="w")
+        self.locality_input.grid(row=6, column=1, pady=(4, 4), padx=(2, 0), sticky="we")
         self.organization_label.grid(row=7, column=0, pady=(4, 4), padx=(0, 2), sticky="e")
-        self.organization_input.grid(row=7, column=1, pady=(4, 4), padx=(2, 0), sticky="e")
-        self.organizational_unit_label.grid(row=8, column=0, pady=(4, 4), padx=(0, 2), sticky="w")
-        self.organizational_unit_input.grid(row=8, column=1, pady=(4, 4), padx=(2, 0), sticky="w")
+        self.organization_input.grid(row=7, column=1, pady=(4, 4), padx=(2, 0), sticky="we")
+        self.organizational_unit_label.grid(row=8, column=0, pady=(4, 4), padx=(0, 2), sticky="e")
+        self.organizational_unit_input.grid(row=8, column=1, pady=(4, 4), padx=(2, 0), sticky="we")
         self.create_certificate_signing_request_button.grid(row=9, column=0, columnspan=2, pady=(4, 0), padx=(0, 0), sticky="we")
 
     def browse_private_key_file(self) -> None:
@@ -220,13 +220,13 @@ class CreateCertificateFrame(ttk.Frame):
         self.create_certificate_button = ttk.Button(self, text="Create Certificate", command=self.create_certificate)
 
         self.certificate_signing_request_label.grid(row=0, column=0, pady=(0, 4), padx=(0, 2), sticky="e")
-        self.certificate_signing_request_input.grid(row=0, column=1, pady=(0, 4), padx=(2, 2), sticky="w")
-        self.certificate_signing_request_browse_button.grid(row=0, column=2, pady=(0, 4), padx=(2, 0))
+        self.certificate_signing_request_input.grid(row=0, column=1, pady=(0, 4), padx=(2, 2), sticky="we")
+        self.certificate_signing_request_browse_button.grid(row=0, column=2, pady=(0, 4), padx=(2, 0), sticky="w")
         self.private_key_label.grid(row=1, column=0, pady=(4, 4), padx=(0, 2), sticky="e")
-        self.private_key_input.grid(row=1, column=1, pady=(4, 4), padx=(2, 2), sticky="w")
-        self.private_key_browse_button.grid(row=1, column=2, pady=(4, 4), padx=(2, 0))
+        self.private_key_input.grid(row=1, column=1, pady=(4, 4), padx=(2, 2), sticky="we")
+        self.private_key_browse_button.grid(row=1, column=2, pady=(4, 4), padx=(2, 0), sticky="w")
         self.validity_days_label.grid(row=2, column=0, pady=(4, 4), padx=(0, 2), sticky="e")
-        self.validity_days_input.grid(row=2, column=1, pady=(4, 4), padx=(2, 2), sticky="w")
+        self.validity_days_input.grid(row=2, column=1, pady=(4, 4), padx=(2, 2), sticky="we")
         self.create_certificate_button.grid(row=3, column=0, columnspan=2, pady=(4, 0), padx=(0, 0), sticky="we")
 
     def browse_certificate_signing_request_file(self) -> None:
@@ -291,10 +291,10 @@ class ViewCertificateFrame(ttk.Frame):
 
         self.certificate_file_label.grid(row=0, column=0, pady=(0, 4), padx=(0, 2), sticky="e")
         self.certificate_file_input.grid(row=0, column=1, pady=(0, 4), padx=(2, 2), sticky="we")
-        self.certificate_file_browse_button.grid(row=0, column=2, pady=(0, 4), padx=(2, 0))
+        self.certificate_file_browse_button.grid(row=0, column=2, pady=(0, 4), padx=(2, 0), sticky="w")
         self.certificate_url_label.grid(row=1, column=0, pady=(4, 4), padx=(0, 2), sticky="e")
         self.certificate_url_input.grid(row=1, column=1, pady=(4, 4), padx=(2, 2), sticky="we")
-        self.certificate_url_fetch_button.grid(row=1, column=2, pady=(4, 4), padx=(2, 0))
+        self.certificate_url_fetch_button.grid(row=1, column=2, pady=(4, 4), padx=(2, 0), sticky="w")
 
         self.separator1 = ttk.Separator(self, orient="horizontal")
         self.separator1.grid(row=2, column=0, columnspan=3, sticky="we")
@@ -400,7 +400,7 @@ class ViewCertificateFrame(ttk.Frame):
             self.certificate_file_input.config(state="readonly")
             certificate = crypto.load_certificate(crypto.FILETYPE_PEM, certificate_file.read())
             certificate_file.close()
-            self._display_certificate(certificate)
+            self.display_certificate(certificate)
         except Exception as exception:
             messagebox.showerror("Error", "".join(traceback.format_exception(exception)))
 
@@ -416,32 +416,38 @@ class ViewCertificateFrame(ttk.Frame):
             certificate_url_port = 443
             certificate_url = (certificate_url_hostname, certificate_url_port)
             certificate = crypto.load_certificate(crypto.FILETYPE_PEM, ssl.get_server_certificate(certificate_url).encode())
-            self._display_certificate(certificate)
+            self.display_certificate(certificate)
         except Exception as exception:
             messagebox.showerror("Error", "".join(traceback.format_exception(exception)))
 
-    def _display_certificate(self, certificate: crypto.X509) -> None:
+    def display_certificate(self, certificate: crypto.X509) -> None:
         subject = certificate.get_subject()
-        self.subject_common_name_value_label.config(text=subject.commonName)
-        self.subject_email_address_value_label.config(text=subject.emailAddress)
-        self.subject_country_value_label.config(text=subject.countryName)
-        self.subject_state_or_province_value_label.config(text=subject.stateOrProvinceName)
-        self.subject_locality_value_label.config(text=subject.localityName)
-        self.subject_organization_value_label.config(text=subject.organizationName)
-        self.subject_organizational_unit_value_label.config(text=subject.organizationalUnitName)
+        self.subject_common_name_value_label.config(text=subject.commonName or "")
+        self.subject_email_address_value_label.config(text=subject.emailAddress or "")
+        self.subject_country_value_label.config(text=subject.countryName or "")
+        self.subject_state_or_province_value_label.config(text=subject.stateOrProvinceName or "")
+        self.subject_locality_value_label.config(text=subject.localityName or "")
+        self.subject_organization_value_label.config(text=subject.organizationName or "")
+        self.subject_organizational_unit_value_label.config(text=subject.organizationalUnitName or "")
 
         issuer = certificate.get_issuer()
-        self.issuer_common_name_value_label.config(text=issuer.commonName)
-        self.issuer_email_address_value_label.config(text=issuer.emailAddress)
-        self.issuer_country_value_label.config(text=issuer.countryName)
-        self.issuer_state_or_province_value_label.config(text=issuer.stateOrProvinceName)
-        self.issuer_locality_value_label.config(text=issuer.localityName)
-        self.issuer_organization_value_label.config(text=issuer.organizationName)
-        self.issuer_organizational_unit_value_label.config(text=issuer.organizationalUnitName)
+        self.issuer_common_name_value_label.config(text=issuer.commonName or "")
+        self.issuer_email_address_value_label.config(text=issuer.emailAddress or "")
+        self.issuer_country_value_label.config(text=issuer.countryName or "")
+        self.issuer_state_or_province_value_label.config(text=issuer.stateOrProvinceName or "")
+        self.issuer_locality_value_label.config(text=issuer.localityName or "")
+        self.issuer_organization_value_label.config(text=issuer.organizationName or "")
+        self.issuer_organizational_unit_value_label.config(text=issuer.organizationalUnitName or "")
 
         self.validity_not_before_value_label.config(text=certificate.get_notBefore().decode())
         self.validity_not_after_value_label.config(text=certificate.get_notAfter().decode())
 
         public_key = certificate.get_pubkey()
-        self.public_key_algorithm_value_label.config(text="RSA")
+        algorithms = {
+            crypto.TYPE_RSA: "RSA",
+            crypto.TYPE_DH: "Diffie-Hellman",
+            crypto.TYPE_DSA: "DSA",
+            crypto.TYPE_EC: "Elliptic Curve",
+        }
+        self.public_key_algorithm_value_label.config(text=algorithms.get(public_key.type(), "Unknown"))
         self.public_key_size_value_label.config(text=public_key.bits())
